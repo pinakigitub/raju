@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { useCubeQuery } from '@cubejs-client/react';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import React from "react";
+import PropTypes from "prop-types";
+import { useCubeQuery } from "@cubejs-client/react";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import {
   CartesianGrid,
   PieChart,
@@ -18,18 +18,21 @@ import {
   Bar,
   LineChart,
   Line,
-} from 'recharts';
-import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+} from "recharts";
+import Typography from "@material-ui/core/Typography";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import moment from "moment";
 
-const CartesianChart = ({ resultSet, children, ChartComponent }) => (
+//const dateFormatter = (item) => moment(item).format("YYYY");
+
+const CartesianChart = ({ resultSet, children, ChartComponent, options }) => (
   <ResponsiveContainer width="100%" height={350}>
     <ChartComponent data={resultSet.chartPivot()}>
-      <XAxis dataKey="x" />
+      <XAxis dataKey="x" {...options} />
       <YAxis />
       <CartesianGrid />
       {children}
@@ -39,15 +42,15 @@ const CartesianChart = ({ resultSet, children, ChartComponent }) => (
   </ResponsiveContainer>
 );
 
-const colors = ['#FF6492', '#141446', '#7A77FF'];
+const colors = ["#FF6492", "#141446", "#7A77FF"];
 
 const stackedChartData = (resultSet) => {
   const data = resultSet
     .pivot()
     .map(({ xValues, yValuesArray }) =>
       yValuesArray.map(([yValues, m]) => ({
-        x: resultSet.axisValuesString(xValues, ', '),
-        color: resultSet.axisValuesString(yValues, ', '),
+        x: resultSet.axisValuesString(xValues, ", "),
+        color: resultSet.axisValuesString(yValues, ", "),
         measure: m && Number.parseFloat(m),
       }))
     )
@@ -56,8 +59,12 @@ const stackedChartData = (resultSet) => {
 };
 
 const TypeToChartComponent = {
-  line: ({ resultSet }) => (
-    <CartesianChart resultSet={resultSet} ChartComponent={LineChart}>
+  line: ({ resultSet, options }) => (
+    <CartesianChart
+      resultSet={resultSet}
+      ChartComponent={LineChart}
+      options={options}
+    >
       {resultSet.seriesNames().map((series, i) => (
         <Line
           key={series.key}
@@ -119,7 +126,7 @@ const TypeToChartComponent = {
     <Typography
       variant="h4"
       style={{
-        textAlign: 'center',
+        textAlign: "center",
       }}
     >
       {resultSet.seriesNames().map((s) => resultSet.totalRow()[s.key])}
@@ -157,10 +164,10 @@ const renderChart = (Component) => ({ resultSet, error, ...props }) =>
   (error && error.toString()) || <CircularProgress />;
 
 const ChartRenderer = ({ vizState }) => {
-  const { query, chartType, ...options } = vizState;
+  const { query, chartType, options } = vizState;
   const component = TypeToMemoChartComponent[chartType];
   const renderProps = useCubeQuery(query);
-  return component && renderChart(component)({ ...options, ...renderProps });
+  return component && renderChart(component)({ options, ...renderProps });
 };
 
 ChartRenderer.propTypes = {

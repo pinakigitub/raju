@@ -5,10 +5,12 @@ import ChartRenderer from "../components/ChartRenderer";
 import Dashboard from "../components/Dashboard";
 import { FilterCriteria } from "../components/FilterCriteria";
 import DashboardItem from "../components/DashboardItem";
+import moment from "moment";
 
+const dateFormatter = (item) => moment(item).format("YYYY");
 const DashboardPage = () => {
-  const [startDate, setStartDate] = useState("2010-01-01");
-  const [endDate, setEnddate] = useState("2027-12-31");
+  const [startDate, setStartDate] = useState("2015-01-01");
+  const [endDate, setEnddate] = useState("2024-12-31");
 
   const setStartAndEndDate = async (start, end) => {
     setStartDate(start);
@@ -39,6 +41,9 @@ const DashboardPage = () => {
       id: 0,
       name: "Video Concerns",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [

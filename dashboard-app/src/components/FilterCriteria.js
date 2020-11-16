@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
 export const FilterCriteria = (props) => {
   const { setDateRange } = props;
   const classes = useStyles();
-  const [startDate, setStartDate] = React.useState(new Date("2010-01-01"));
-  const [endDate, setEndDate] = React.useState(new Date("2030-01-01"));
+  const [startDate, setStartDate] = React.useState(new Date("2015-01-01"));
+  const [endDate, setEndDate] = React.useState(new Date("2024-12-31"));
   const presetsItems = [
     {
       value: {
