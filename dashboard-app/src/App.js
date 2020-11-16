@@ -21,14 +21,14 @@ const AppLayout = ({ children }) => {
   return (
     <div className={classes.root}>
       <Header />
-      <div>{children}</div>
+      <div> {children} </div>{" "}
     </div>
   );
 };
 
 const App = ({ children }) => (
   <CubeProvider cubejsApi={cubejsApi}>
-    <AppLayout>{children}</AppLayout>
+    <AppLayout> {children} </AppLayout>{" "}
   </CubeProvider>
 );
 
