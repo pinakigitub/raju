@@ -1,0 +1,29 @@
+.search-container {
+  display: flex;
+}
+
+.topnav input[type="text"] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.topnav .search-container .searchButton {
+  float: right;
+  padding: 12px 20px;
+  margin: 8px 0;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+}
+topnav .search-container button:hover {
+  background: #ccc;
+}
+.btnColor {
+  color: #ffffff;
+  background-color: #4caf50;
+}

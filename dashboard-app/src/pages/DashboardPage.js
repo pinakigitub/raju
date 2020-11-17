@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import ChartRenderer from "../components/ChartRenderer";
 import Dashboard from "../components/Dashboard";
 import { FilterCriteria } from "../components/FilterCriteria";
+import { SearchBar } from "../components/SearchBar";
 import DashboardItem from "../components/DashboardItem";
 import moment from "moment";
 
@@ -267,7 +268,8 @@ const DashboardPage = () => {
 
   return DashboardItems.length ? (
     <>
-      <FilterCriteria setDateRange={setStartAndEndDate}></FilterCriteria>
+      <SearchBar setDateRange={setStartAndEndDate}></SearchBar>
+      {/* <FilterCriteria setDateRange={setStartAndEndDate}></FilterCriteria> */}
       <Dashboard>{DashboardItems.map(dashboardItem)}</Dashboard>
     </>
   ) : (

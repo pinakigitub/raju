@@ -17,7 +17,7 @@ import {
 } from "@material-ui/pickers";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import "../components/FilterCriteria.css";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
