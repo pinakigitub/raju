@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const FilterCriteria = (props) => {
-  const { setDateRange } = props;
+  const { setDateRange, closePopover } = props;
   const classes = useStyles();
   const [startDate, setStartDate] = React.useState(new Date("2015-01-01"));
   const [endDate, setEndDate] = React.useState(new Date("2024-12-31"));
@@ -68,6 +68,7 @@ export const FilterCriteria = (props) => {
 
   const getGraph = async (e, obj) => {
     setDateRange(obj.value.startDate, obj.value.endDate);
+    closePopover(obj.text);
   };
 
   const handleStartDateChange = (date) => {
@@ -78,6 +79,7 @@ export const FilterCriteria = (props) => {
   };
   const setDateRangeInDashBoard = () => {
     setDateRange(startDate, endDate);
+    closePopover("CustomDate");
   };
 
   return (

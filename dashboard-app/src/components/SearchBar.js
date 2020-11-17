@@ -1,102 +1,114 @@
 import React from "react";
+import { Grid, TextField, Button, FormHelperText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Collapse from "@material-ui/core/Collapse";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import StarBorder from "@material-ui/icons/StarBorder";
+import Icon from "@material-ui/core/Icon";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Popover from "@material-ui/core/Popover";
+import InputBase from "@material-ui/core/InputBase";
+import Divider from "@material-ui/core/Divider";
 import { FilterCriteria } from "./FilterCriteria";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import Popover from "@material-ui/core/Popover";
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
-    "& > *": {
-      margin: theme.spacing(1),
-      width: "35ch",
-    },
+    padding: "2px 10px",
+    display: "flex",
+    alignItems: "center",
   },
-  root1: {
-    width: "100%",
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+  input: {
+    flex: 1,
   },
-  nested: {
-    paddingLeft: theme.spacing(4),
+  iconButton: {
+    padding: 10,
   },
-}));
+  divider: {
+    height: 28,
+    margin: 4,
+  },
+});
 
 export const SearchBar = (props) => {
   const { setDateRange } = props;
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [currentFilterName, setCurrentFilterName] = React.useState("Test");
 
-  const [open, setOpen] = React.useState(true);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const closePopover = (name) => {
+    setAnchorEl(null);
 
-  const handleClick = () => {
-    setOpen(!open);
+    setCurrentFilterName(name);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
-  return (
-    <div className="topnav">
-      <h3>Search </h3>
-      <div class="search-container">
-        <input type="text" placeholder="Enter search here ..." name="search" />
+  const open = Boolean(anchorEl);
 
-        <PopupState variant="popover" popupId="demo-popup-popover">
-          {(popupState) => (
-            <div>
-              {/* <button
-                className="searchButton "
-                type="submit"
-                {...bindTrigger(popupState)}
-              >
-                Open Popover
-              </button> */}
-              <input
-                type="text"
-                name="check"
-                placeholder="Last value"
-                {...bindTrigger(popupState)}
-              />
-              <Popover
-                {...bindPopover(popupState)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "center",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "center",
-                }}
-              >
-                <Box p={2}>
-                  <Typography>
-                    The content of the Popover.
-                    <FilterCriteria
-                      setDateRange={setDateRange}
-                    ></FilterCriteria>
-                  </Typography>
-                </Box>
-              </Popover>
-            </div>
-          )}
-        </PopupState>
-        <button className="searchButton btnColor" type="submit">
-          <FontAwesomeIcon icon={faSearch} />
-        </button>
-      </div>
-    </div>
+  return (
+    <Grid container className={classes.display}>
+      <Grid item xs={12}>
+        <Paper component="form" className={classes.root} fullWidth="true">
+          <InputBase
+            className={classes.input}
+            placeholder="enter search here..."
+            inputProps={{ "aria-label": "search google maps" }}
+          />
+          <IconButton
+            type="submit"
+            className={classes.iconButton}
+            aria-label="search"
+          >
+            <SearchIcon />
+          </IconButton>
+          <Divider className={classes.divider} orientation="vertical" />
+          <ButtonGroup
+            variant="contained"
+            color="primary"
+            aria-label="split button"
+            className={classes.searchBar}
+          >
+            <Button>{currentFilterName}</Button>
+            <Button
+              size="small"
+              aria-controls={open ? "split-button-menu" : undefined}
+              aria-expanded={open ? "true" : undefined}
+              aria-label="select merge strategy"
+              aria-haspopup="menu"
+              onClick={handleClick}
+            >
+              <ArrowDropDownIcon />
+            </Button>
+          </ButtonGroup>
+
+          <Popover
+            open={open}
+            onClose={handleClose}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <Typography className={classes.typography}>
+              <FilterCriteria
+                setDateRange={setDateRange}
+                closePopover={closePopover}
+              ></FilterCriteria>
+            </Typography>
+          </Popover>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
