@@ -18,6 +18,7 @@ const useStyles = makeStyles({
     padding: "2px 10px",
     display: "flex",
     alignItems: "center",
+    marginTop: "20px",
   },
   input: {
     flex: 1,
@@ -32,10 +33,12 @@ const useStyles = makeStyles({
 });
 
 export const SearchBar = (props) => {
-  const { setDateRange } = props;
+  const { handleGranularity } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [currentFilterName, setCurrentFilterName] = React.useState("Test");
+  const [currentFilterName, setCurrentFilterName] = React.useState(
+    "Year to Date"
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -101,10 +104,7 @@ export const SearchBar = (props) => {
             }}
           >
             <Typography className={classes.typography}>
-              <FilterCriteria
-                setDateRange={setDateRange}
-                closePopover={closePopover}
-              ></FilterCriteria>
+              <FilterCriteria closePopover={closePopover}></FilterCriteria>
             </Typography>
           </Popover>
         </Paper>
@@ -112,3 +112,5 @@ export const SearchBar = (props) => {
     </Grid>
   );
 };
+
+export default SearchBar;

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import DateFnsUtils from "@date-io/date-fns";
+import DashboardContext from "../context/DashboardContext";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import {
@@ -17,7 +18,7 @@ import {
 } from "@material-ui/pickers";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import "../components/FilterCriteria.css";
+// import "../components/FilterCriteria.css";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -29,7 +30,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const FilterCriteria = (props) => {
-  const { setDateRange, closePopover } = props;
+  const { setStartAndEndDate, handleGranularity } = useContext(
+    DashboardContext
+  );
+  const { closePopover } = props;
+
   const classes = useStyles();
   const [startDate, setStartDate] = React.useState(new Date("2015-01-01"));
   const [endDate, setEndDate] = React.useState(new Date("2024-12-31"));
@@ -40,6 +45,24 @@ export const FilterCriteria = (props) => {
         endDate: moment()._d.toLocaleDateString(),
       },
       text: "Today",
+      granularity: "day",
+    },
+    {
+      value: {
+        startDate: moment(moment().subtract(6, "days"))._d.toLocaleDateString(),
+        endDate: moment()._d.toLocaleDateString(),
+      },
+      text: "Week to Date",
+      granularity: "day",
+    },
+
+    {
+      value: {
+        startDate: moment(moment().year() + "-01-01")._d.toLocaleDateString(),
+        endDate: moment()._d.toLocaleDateString(),
+      },
+      text: "Year to Date",
+      granularity: "month",
     },
     {
       value: {
@@ -55,6 +78,19 @@ export const FilterCriteria = (props) => {
         )._d.toLocaleDateString(),
       },
       text: "PreviousYear",
+      granularity: "month",
+    },
+    {
+      value: {
+        startDate: moment(
+          moment()
+            .subtract(4, "years")
+            .year() + "-01-01"
+        )._d.toLocaleDateString(),
+        endDate: moment(moment().year() + "-12-31")._d.toLocaleDateString(),
+      },
+      text: "Last Five Years",
+      granularity: "year",
     },
   ];
 
@@ -67,7 +103,8 @@ export const FilterCriteria = (props) => {
   ));
 
   const getGraph = async (e, obj) => {
-    setDateRange(obj.value.startDate, obj.value.endDate);
+    setStartAndEndDate(obj.value.startDate, obj.value.endDate);
+    handleGranularity(obj.granularity);
     closePopover(obj.text);
   };
 
@@ -77,13 +114,14 @@ export const FilterCriteria = (props) => {
   const handleEndDateChange = (date) => {
     setEndDate(date);
   };
+
   const setDateRangeInDashBoard = () => {
-    setDateRange(startDate, endDate);
-    closePopover("CustomDate");
+    setStartAndEndDate(startDate, endDate);
+    closePopover("Custom Date");
   };
 
   return (
-    <div>
+    <>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -147,6 +185,6 @@ export const FilterCriteria = (props) => {
           </Typography>
         </AccordionDetails>
       </Accordion>
-    </div>
+    </>
   );
 };

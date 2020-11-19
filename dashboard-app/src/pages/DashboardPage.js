@@ -6,16 +6,46 @@ import Dashboard from "../components/Dashboard";
 import { FilterCriteria } from "../components/FilterCriteria";
 import { SearchBar } from "../components/SearchBar";
 import DashboardItem from "../components/DashboardItem";
+import { DashboardContextProvider } from "../context/DashboardContext";
 import moment from "moment";
 
-const dateFormatter = (item) => moment(item).format("YYYY");
 const DashboardPage = () => {
-  const [startDate, setStartDate] = useState("2015-01-01");
-  const [endDate, setEnddate] = useState("2024-12-31");
+  const [startDate, setStartDate] = useState(
+    moment(moment().year() + "-01-01")._d.toLocaleDateString()
+  );
+  const [endDate, setEnddate] = useState(moment()._d.toLocaleDateString());
+  const [granularity, setGranularity] = useState("month");
 
-  const setStartAndEndDate = async (start, end) => {
-    setStartDate(start);
-    setEnddate(end);
+  const functionAndProps = {
+    setStartAndEndDate: async (start, end) => {
+      setStartDate(start);
+      setEnddate(end);
+    },
+    handleGranularity: async (span) => {
+      setGranularity(span);
+    },
+  };
+
+  const granularityVSdateFormatter = [
+    {
+      key: "year",
+      value: "YYYY",
+    },
+    {
+      key: "month",
+      value: "MMM YY",
+    },
+    {
+      key: "day",
+      value: "MMM DD",
+    },
+  ];
+
+  const dateFormatter = (item) => {
+    var fdg =
+      granularityVSdateFormatter?.filter((x) => x.key == granularity)[0]
+        ?.value || "YYYY";
+    return moment(item).format(fdg);
   };
 
   const DashboardItems = [
@@ -50,7 +80,7 @@ const DashboardPage = () => {
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "year",
+              granularity: granularity,
               dateRange: [startDate, endDate],
             },
           ],
@@ -67,13 +97,16 @@ const DashboardPage = () => {
       id: 1,
       name: "Audio Concerns",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
+              granularity: granularity,
               dateRange: [startDate, endDate],
-              granularity: "day",
             },
           ],
           segments: ["Surveys.audioConcerns"],
@@ -88,12 +121,16 @@ const DashboardPage = () => {
       id: 2,
       name: "Ease of Use Concerns",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           segments: ["Surveys.easeofuseConcerns"],
@@ -108,12 +145,16 @@ const DashboardPage = () => {
       id: 3,
       name: "Provider Survey Ratings",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           dimensions: ["Surveys.rating"],
@@ -128,12 +169,16 @@ const DashboardPage = () => {
       id: 4,
       name: "Member Survey Ratings",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           dimensions: ["Surveys.rating"],
@@ -148,12 +193,16 @@ const DashboardPage = () => {
       id: 5,
       name: "Provider with Rating < 4 OR Audio/Video Concerns - Browser Types",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           segments: [
@@ -175,12 +224,16 @@ const DashboardPage = () => {
       id: 6,
       name: "Provider with Rating < 4 OR Audio/Video Concerns - Browser Types",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           segments: [
@@ -200,6 +253,9 @@ const DashboardPage = () => {
       id: 8,
       name: "New Chart",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
@@ -226,12 +282,16 @@ const DashboardPage = () => {
       id: 9,
       name: "New Chart",
       vizState: {
+        options: {
+          tickFormatter: dateFormatter,
+        },
         query: {
           measures: ["Surveys.count"],
           timeDimensions: [
             {
               dimension: "Surveys.appointmentDateTime",
-              granularity: "day",
+              granularity: granularity,
+              dateRange: [startDate, endDate],
             },
           ],
           segments: ["Surveys.videoConcerns"],
@@ -268,8 +328,10 @@ const DashboardPage = () => {
 
   return DashboardItems.length ? (
     <>
-      <SearchBar setDateRange={setStartAndEndDate}></SearchBar>
-      {/* <FilterCriteria setDateRange={setStartAndEndDate}></FilterCriteria> */}
+      <DashboardContextProvider value={functionAndProps}>
+        <SearchBar></SearchBar>
+      </DashboardContextProvider>
+
       <Dashboard>{DashboardItems.map(dashboardItem)}</Dashboard>
     </>
   ) : (
